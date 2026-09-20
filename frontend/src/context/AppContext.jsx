@@ -5,7 +5,7 @@ export const AppContext = createContext();
 export function AppContextProvider({ children }) {
 
     const [user, setUser] = useState(null);
-    const [loadingUser, setLoadingUser] = useState(true);
+    const [loadingUser, setLoadingUser] = useState(false);
 
     const value = {
         user,
