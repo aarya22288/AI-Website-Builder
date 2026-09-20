@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import Login from "../components/Login";
 
 const AuthPage = ({ mode }) => {
 
     const isLogin = mode === "login";
-
+    const { login, register } = useAppContext();
     // Form states
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -18,6 +19,36 @@ const AuthPage = ({ mode }) => {
     // Error and loading
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        setError("");
+        setLoading(true);
+
+        try {
+
+            if (isLogin) {
+                await login(email, password);
+            } else {
+                await register(name, email, password);
+            }
+
+        } catch (error) {
+
+            setError(
+                error.response?.data?.error ||
+                error.message ||
+                "Something went wrong"
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+    };
 
     return (
         <div className="min-h-screen flex">
@@ -53,7 +84,10 @@ const AuthPage = ({ mode }) => {
                     )}
 
                     {/* Form */}
-                    <form className="space-y-5">
+                    <form
+                        className="space-y-5"
+                        onSubmit={handleSubmit}
+                    >
 
                         {/* Full Name - only for registration */}
                         {!isLogin && (
