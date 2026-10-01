@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Sparkles,
   ArrowUp,
@@ -8,13 +8,25 @@ import {
   Megaphone,
   LogOut
 } from "lucide-react";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/AppContext.jsx";
+import PromptInput from "../components/PromptInput.jsx"
 
 function HomePage() {
 
-  const { user } = useAppContext();
+  const {
+    user,
+    projects,
+    loadingProjects,
+    loadProjects
+  } = useAppContext();
 
   const [prompt, setPrompt] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      loadProjects();
+    }
+  }, [user]);
 
   const quickPrompts = [
     {
@@ -41,14 +53,6 @@ function HomePage() {
 
   const handleQuickPrompt = (text) => {
     setPrompt(text);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!prompt.trim()) return;
-
-    console.log("Website prompt:", prompt);
   };
 
   return (
@@ -160,55 +164,17 @@ function HomePage() {
 
           {/* ================= PROMPT BOX ================= */}
 
-          <form
-            onSubmit={handleSubmit}
-            className="w-full max-w-3xl mt-12"
-          >
-
-            <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl shadow-2xl shadow-black/40 focus-within:border-violet-500/50 transition">
-
-
-              {/* Textarea */}
-
-              <textarea
-                value={prompt}
-                onChange={(e) =>
-                  setPrompt(e.target.value)
-                }
-                placeholder="Describe the website you want to build..."
-                rows={5}
-                className="w-full resize-none bg-transparent outline-none px-5 pt-5 pb-16 text-sm sm:text-base text-white placeholder:text-zinc-600"
-              />
-
-
-              {/* Bottom controls */}
-
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-
-
-                <span className="text-xs text-zinc-600 hidden sm:block">
-                  Powered by AI
-                </span>
-
-
-                <button
-                  type="submit"
-                  disabled={!prompt.trim()}
-                  className="ml-auto size-10 rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 flex items-center justify-center hover:scale-105 transition disabled:opacity-30 disabled:hover:scale-100"
-                >
-
-                  <ArrowUp
-                    size={19}
-                    className="text-white"
-                  />
-
-                </button>
-
-              </div>
-
-            </div>
-
-          </form>
+          <PromptInput
+    value={prompt}
+    onChange={setPrompt}
+    large={true}
+    autoFocus={true}
+    variant="glass"
+    placeholder="Describe the website you want to build..."
+    onSubmit={(prompt) => {
+        console.log("Website prompt:", prompt);
+    }}
+/>
 
 
           {/* ================= QUICK PROMPTS ================= */}

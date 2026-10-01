@@ -10,6 +10,18 @@ export function AppContextProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loadingUser, setLoadingUser] = useState(false);
 
+    const [projects, setProjects] = useState([]);
+    const [loadingProjects, setLoadingProjects] = useState(true);
+
+    const [activeProject, setActiveProject] = useState(null);
+    const [loadingActiveProject, setLoadingActiveProject] = useState(true);
+
+    const [chatLoading, setChatLoading] = useState(false);
+    const [generatingProject, setGeneratingProject] = useState(false);
+
+    const [activeFile, setActiveFile] = useState("/app.js");
+    const [showCode, setShowCode] = useState(false);
+
     const navigate = useNavigate();
 
     // Login function
@@ -74,6 +86,20 @@ export function AppContextProvider({ children }) {
         }
     };
 
+    const loadProjects = async () => {
+        if (!user) return;
+
+        try {
+            const { data } = await api.get("/api/projects");
+            setProjects(data);
+        } catch (error) {
+            console.error("Failed to load projects:", error);
+            toast.error("Failed to load project list");
+        } finally {
+            setLoadingProjects(false);
+        }
+    };
+
 
     const value = {
         user,
@@ -81,7 +107,24 @@ export function AppContextProvider({ children }) {
         loadingUser,
         setLoadingUser,
         login,
-        register
+        register,
+        projects,
+        setProjects,
+        loadingProjects,
+        setLoadingProjects,
+        activeProject,
+        setActiveProject,
+        loadingActiveProject,
+        setLoadingActiveProject,
+        chatLoading,
+        setChatLoading,
+        generatingProject,
+        setGeneratingProject,
+        activeFile,
+        setActiveFile,
+        showCode,
+        setShowCode,
+        loadProjects,
     };
 
 
