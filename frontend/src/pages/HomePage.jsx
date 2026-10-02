@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  Sparkles,
-  ArrowUp,
-  ShoppingBag,
-  UserRound,
-  BriefcaseBusiness,
-  Megaphone,
-  LogOut
+    BriefcaseBusiness,
+    LogOut,
+    Megaphone,
+    ShoppingBag,
+    Sparkles,
+    UserRound
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PromptInput from "../components/PromptInput.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
-import PromptInput from "../components/PromptInput.jsx"
 
 function HomePage() {
 
+  const navigate = useNavigate();
   const {
     user,
     projects,
     loadingProjects,
-    loadProjects
+    loadProjects,
+     generatingProject
   } = useAppContext();
 
   const [prompt, setPrompt] = useState("");
@@ -165,56 +168,68 @@ function HomePage() {
           {/* ================= PROMPT BOX ================= */}
 
           <PromptInput
-    value={prompt}
-    onChange={setPrompt}
-    large={true}
-    autoFocus={true}
-    variant="glass"
-    placeholder="Describe the website you want to build..."
-    onSubmit={(prompt) => {
-        console.log("Website prompt:", prompt);
-    }}
-/>
+            value={prompt}
+            onChange={setPrompt}
+            large={true}
+            autoFocus={true}
+            variant="glass"
+            placeholder="Describe the website you want to build..."
+            onSubmit={(prompt) => {
+              console.log("Website prompt:", prompt);
+            }}
+          />
 
 
           {/* ================= QUICK PROMPTS ================= */}
+{/* Scrolling Prompt Tags */}
+<div className="w-full max-w-2xl mx-auto mt-5 overflow-hidden">
+    <div className="marquee-container">
+        <div className="animate-marquee">
+            {[...quickPrompts, ...quickPrompts].map((tag, i) => (
+                <button
+                    key={i}
+                    onClick={() => setPrompt(tag.prompt)}
+                    disabled={generatingProject}
+                    className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/5 text-sm text-zinc-300 hover:bg-violet-500/20 hover:border-violet-400/50 hover:text-white transition cursor-pointer"
+                >
+                    {React.createElement(tag.icon, { size: 16 })}
+                    <span>{tag.label}</span>
+                </button>
+            ))}
+        </div>
+    </div>
+</div>
 
-          <div className="mt-8">
+         {/* ================= RECENT PROJECTS ================= */}
 
-            <p className="text-center text-xs text-zinc-600 mb-4">
-              Or start with a template
-            </p>
+{projects.length > 0 && (
+    <div className="w-full max-w-5xl mt-20">
 
+        <h2 className="text-xl font-semibold mb-6">
+            Your Recent Projects
+        </h2>
 
-            <div className="flex flex-wrap justify-center gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-              {quickPrompts.map((item) => {
+            {projects.map((project) => (
+                <div
+                    key={project._id}
+                    onClick={() => navigate(`/builder/${project._id}`)}
+                    className="rounded-xl border border-white/10 bg-white/[0.03] p-5 hover:border-violet-500/40 transition cursor-pointer"
+                >
+                    <h3 className="text-base font-medium text-white">
+                        {project.name}
+                    </h3>
 
-                const Icon = item.icon;
+                    <p className="text-sm text-zinc-500 mt-2">
+                        {project.description || "No description available"}
+                    </p>
+                </div>
+            ))}
 
-                return (
-                  <button
-                    key={item.label}
-                    type="button"
-                    onClick={() =>
-                      handleQuickPrompt(item.prompt)
-                    }
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-violet-500/40 hover:bg-violet-500/5 transition text-sm"
-                  >
-
-                    <Icon size={15} />
-
-                    {item.label}
-
-                  </button>
-                );
-
-              })}
-
-            </div>
-
-          </div>
-
+        </div>
+    </div>
+)}
 
           {/* ================= TRUST TEXT ================= */}
 

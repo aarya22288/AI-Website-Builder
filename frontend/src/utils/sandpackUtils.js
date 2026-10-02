@@ -1,38 +1,41 @@
-// Scans source files to detect npm dependencies from import statements
+// Detect npm dependencies from import statements
 export function detectDependencies(files) {
     const deps = {};
+
     if (!files) return deps;
 
     const allCode = Object.values(files).join("\n");
-    const filePaths = Object.keys(files);
 
-    const isLocalFileOrFolder = (pkgName) => {
-        const name = pkgName.startsWith("@/") ? pkgName.substring(2) : pkgName;
-        return (
-            pkgName.startsWith("@/") ||
-            pkgName === "@" ||
-            filePaths.some(p => 
-                p === `/${name}` || 
-                p.startsWith(`/${name}/`) || 
-                p.replace(/\.[^/.]+$/, "") === `/${name}`
-            )
-        );
-    };
+    // Match imports such as:
+    // import React from "react"
+    // import { Button } from "lucide-react"
+    // import "some-package"
+    const importRegex = /(?:from\s+|import\s*)['"]([^'"]+)['"]/g;
 
-    const importRegex = /from\s+['"]([^./][^'"]*)['"]/g;
     let match;
+
     while ((match = importRegex.exec(allCode)) !== null) {
         const rawImport = match[1];
 
-        // Scoped packages like @scope/package, normal packages like package
-        const pkg = rawImport.startsWith("@") && !rawImport.startsWith("@/")
+        // Ignore local files and aliases
+        if (
+            rawImport.startsWith(".") ||
+            rawImport.startsWith("/") ||
+            rawImport.startsWith("@/")
+        ) {
+            continue;
+        }
+
+        // Handle scoped packages, e.g. @scope/package
+        const pkg = rawImport.startsWith("@")
             ? rawImport.split("/").slice(0, 2).join("/")
             : rawImport.split("/")[0];
 
-        // Skip react (included in template), react-dom, and local modules
-        if (pkg !== "react" && pkg !== "react-dom" && !isLocalFileOrFolder(pkg)) {
+        // React and React DOM are included in the template
+        if (pkg !== "react" && pkg !== "react-dom") {
             deps[pkg] = "latest";
         }
     }
+
     return deps;
 }
