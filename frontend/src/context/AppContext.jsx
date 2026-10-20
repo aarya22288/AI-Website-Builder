@@ -103,6 +103,24 @@ export function AppContextProvider({ children }) {
         }
     };
 
+    // Logout function
+const logout = async () => {
+    try {
+        await api.post("/api/auth/logout");
+
+        setUser(null);
+        setProjects([]);
+        setActiveProject(null);
+
+        toast.success("Logged out successfully!");
+
+        navigate("/login");
+    } catch (error) {
+        console.error("Logout failed:", error);
+        toast.error("Failed to log out. Please try again.");
+    }
+};
+
     const loadProjects = async () => {
         if (!user) return;
 
@@ -125,6 +143,7 @@ export function AppContextProvider({ children }) {
         setLoadingUser,
         login,
         register,
+        logout,
         projects,
         setProjects,
         loadingProjects,

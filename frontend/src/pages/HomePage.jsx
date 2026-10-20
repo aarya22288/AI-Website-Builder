@@ -1,4 +1,3 @@
-import React from "react";
 import {
     BriefcaseBusiness,
     LogOut,
@@ -7,7 +6,7 @@ import {
     Sparkles,
     UserRound
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PromptInput from "../components/PromptInput.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
@@ -19,8 +18,9 @@ function HomePage() {
     user,
     projects,
     loadingProjects,
+    logout,
     loadProjects,
-     generatingProject
+    generatingProject
   } = useAppContext();
 
   const [prompt, setPrompt] = useState("");
@@ -106,6 +106,7 @@ function HomePage() {
               </span>
 
               <button
+                onClick={logout}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 transition text-sm"
               >
 
@@ -181,55 +182,55 @@ function HomePage() {
 
 
           {/* ================= QUICK PROMPTS ================= */}
-{/* Scrolling Prompt Tags */}
-<div className="w-full max-w-2xl mx-auto mt-5 overflow-hidden">
-    <div className="marquee-container">
-        <div className="animate-marquee">
-            {[...quickPrompts, ...quickPrompts].map((tag, i) => (
-                <button
+          {/* Scrolling Prompt Tags */}
+          <div className="w-full max-w-2xl mx-auto mt-5 overflow-hidden">
+            <div className="marquee-container">
+              <div className="animate-marquee">
+                {[...quickPrompts, ...quickPrompts].map((tag, i) => (
+                  <button
                     key={i}
                     onClick={() => setPrompt(tag.prompt)}
                     disabled={generatingProject}
                     className="shrink-0 flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/5 text-sm text-zinc-300 hover:bg-violet-500/20 hover:border-violet-400/50 hover:text-white transition cursor-pointer"
-                >
+                  >
                     {React.createElement(tag.icon, { size: 16 })}
                     <span>{tag.label}</span>
-                </button>
-            ))}
-        </div>
-    </div>
-</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
-         {/* ================= RECENT PROJECTS ================= */}
+          {/* ================= RECENT PROJECTS ================= */}
 
-{projects.length > 0 && (
-    <div className="w-full max-w-5xl mt-20">
+          {projects.length > 0 && (
+            <div className="w-full max-w-5xl mt-20">
 
-        <h2 className="text-xl font-semibold mb-6">
-            Your Recent Projects
-        </h2>
+              <h2 className="text-xl font-semibold mb-6">
+                Your Recent Projects
+              </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-            {projects.map((project) => (
-                <div
+                {projects.map((project) => (
+                  <div
                     key={project._id}
                     onClick={() => navigate(`/builder/${project._id}`)}
                     className="rounded-xl border border-white/10 bg-white/[0.03] p-5 hover:border-violet-500/40 transition cursor-pointer"
-                >
+                  >
                     <h3 className="text-base font-medium text-white">
-                        {project.name}
+                      {project.name}
                     </h3>
 
                     <p className="text-sm text-zinc-500 mt-2">
-                        {project.description || "No description available"}
+                      {project.description || "No description available"}
                     </p>
-                </div>
-            ))}
+                  </div>
+                ))}
 
-        </div>
-    </div>
-)}
+              </div>
+            </div>
+          )}
 
           {/* ================= TRUST TEXT ================= */}
 
