@@ -58,13 +58,12 @@ const AuthPage = ({ mode }) => {
                 <div className="relative z-10 w-full max-w-md">
 
                     {/* Mobile logo */}
-                    <div className="flex lg:hidden items-center justify-center gap-2 mb-10">
-                        <div className="size-9 rounded-xl bg-violet-600/20 border border-violet-400/20 flex items-center justify-center">
-                            <Sparkles className="text-violet-300" size={20} />
-                        </div>
-                        <span className="text-lg font-semibold">
-                            Builder <span className="text-violet-400">AI</span>
-                        </span>
+                    <div className="flex lg:hidden items-center justify-center mb-10">
+                        <img
+                            src="/logo.svg"
+                            alt="Builder AI"
+                            className="h-10 w-auto object-contain"
+                        />
                     </div>
 
                     {/* Heading */}

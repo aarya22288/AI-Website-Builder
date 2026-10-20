@@ -102,12 +102,16 @@ createRoot(document.getElementById('root')).render(<App />);
 `,
         );
 
-        // Add project files
-        for (const [path, content] of Object.entries(fileMap)) {
-            const cleanPath = path.startsWith("/") ? path.slice(1) : path;
-            zip.file(`src/${cleanPath}`, content);
-        }
+       // Add project files without overwriting the generated entry point
+for (const [path, content] of Object.entries(fileMap)) {
+    const cleanPath = path.replace(/^\/+/, "");
 
+    if (cleanPath === "index.jsx") {
+        continue;
+    }
+
+    zip.file(`src/${cleanPath}`, content);
+}
         const blob = await zip.generateAsync({ type: "blob" });
         const fileName = `${(project.name || "website").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.zip`;
         saveAs(blob, fileName);

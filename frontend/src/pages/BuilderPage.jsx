@@ -1,8 +1,10 @@
 import { Sandpack } from "@codesandbox/sandpack-react";
+import { Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/api.js";
 import { useAppContext } from "../context/AppContext";
+import { exportProjectZip } from "../utils/exportProject";
 import { detectDependencies } from "../utils/sandpackUtils";
 
 import {
@@ -129,6 +131,15 @@ function BuilderPage() {
                     </button>
 
                     <button
+                        onClick={() => exportProjectZip(activeProject)}
+                        disabled={!activeProject}
+                        className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-white hover:bg-violet-700 disabled:opacity-50"
+                    >
+                        <Download size={18} />
+                        Export ZIP
+                    </button>
+
+                    <button
                         onClick={() => setActiveView("preview")}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition ${activeView === "preview"
                             ? "bg-violet-600 text-white"
@@ -191,7 +202,7 @@ function BuilderPage() {
                             customSetup={{
                                 dependencies,
                             }}
-                            
+
                             options={{
                                 activeFile: selectedFile,
                                 visibleFiles: Object.keys(sandpackFiles),
@@ -204,11 +215,11 @@ function BuilderPage() {
                                 showNavigator: true,
                                 layout: "preview",
                                 externalResources: [
-    "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4",
-],
+                                    "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4",
+                                ],
                             }}
                             theme="dark"
-                            
+
                         />
                     ) : (
                         <div className="h-full flex items-center justify-center text-zinc-500">

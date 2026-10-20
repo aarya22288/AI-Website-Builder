@@ -1,14 +1,14 @@
-import { createContext, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import api from "../api/API";
+import { useNavigate } from "react-router-dom";
+import api from "../api/api.js";
 
 export const AppContext = createContext();
 
 export function AppContextProvider({ children }) {
 
     const [user, setUser] = useState(null);
-    const [loadingUser, setLoadingUser] = useState(false);
+    const [loadingUser, setLoadingUser] = useState(true);
 
     const [projects, setProjects] = useState([]);
     const [loadingProjects, setLoadingProjects] = useState(true);
@@ -23,6 +23,23 @@ export function AppContextProvider({ children }) {
     const [showCode, setShowCode] = useState(false);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+    const loadUser = async () => {
+        try {
+            setLoadingUser(true);
+
+            const { data } = await api.get("/api/auth/me");
+            setUser(data.user);
+        } catch (error) {
+            setUser(null);
+        } finally {
+            setLoadingUser(false);
+        }
+    };
+
+    loadUser();
+}, []);
 
     // Login function
     const login = async (email, password) => {

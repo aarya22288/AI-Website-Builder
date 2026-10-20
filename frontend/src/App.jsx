@@ -5,14 +5,13 @@ import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
 import BuilderPage from "./pages/BuilderPage";
 import PreviewPage from "./pages/PreviewPage";
+import PublishPage from "./pages/PublishPage";
 
 function App() {
     return (
         <Routes>
-
             {/* Guest Routes */}
             <Route element={<GuestLayout />}>
-
                 <Route
                     path="/login"
                     element={<AuthPage mode="login" />}
@@ -22,16 +21,11 @@ function App() {
                     path="/register"
                     element={<AuthPage mode="register" />}
                 />
-
             </Route>
 
-            {/* Protected Routes */}
+            {/* Main App Routes */}
             <Route element={<Layout />}>
-
-                <Route
-                    path="/"
-                    element={<HomePage />}
-                />
+                <Route path="/" element={<HomePage />} />
 
                 <Route
                     path="/builder/:id"
@@ -42,9 +36,13 @@ function App() {
                     path="/preview/:id"
                     element={<PreviewPage />}
                 />
-
             </Route>
 
+            {/* Public Website Route */}
+            <Route
+                path="/publish/:id"
+                element={<PublishPage />}
+            />
         </Routes>
     );
 }
